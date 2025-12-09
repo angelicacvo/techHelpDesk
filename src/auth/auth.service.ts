@@ -1,26 +1,106 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import {
+  Injectable,
+  UnauthorizedException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
+  ) {}
+
+  async register(registerDto: RegisterDto) {
+    const { email, name, password, role } = registerDto;
+
+    const existingUser = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (existingUser) {
+      throw new ConflictException('El email ya está registrado');
+    }
+
+    const user = this.userRepository.create({
+      name,
+      email,
+      password,
+      role,
+    });
+
+    await this.userRepository.save(user);
+
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    const token = this.jwtService.sign(payload);
+
+    return {
+      message: 'Usuario registrado exitosamente',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      access_token: token,
+    };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async login(loginDto: LoginDto) {
+    const { email, password } = loginDto;
+
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+
+    if (!user) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    if (!user.isActive) {
+      throw new UnauthorizedException('Usuario inactivo');
+    }
+
+    const isPasswordValid = await user.comparePassword(password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Credenciales inválidas');
+    }
+
+    const payload = { sub: user.id, email: user.email, role: user.role };
+    const token = this.jwtService.sign(payload);
+
+    return {
+      message: 'Login exitoso',
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+      access_token: token,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+  async validateUser(userId: string): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId, isActive: true },
+    });
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    if (!user) {
+      throw new UnauthorizedException('Usuario no encontrado o inactivo');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return user;
   }
 }
