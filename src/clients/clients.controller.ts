@@ -8,6 +8,10 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
 
+/**
+ * Controller that handles client profile endpoints
+ * All operations require ADMIN role
+ */
 @ApiTags('Clients')
 @ApiBearerAuth('JWT-auth')
 @Controller('clients')

@@ -11,6 +11,10 @@ import { User } from '../users/entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
+/**
+ * Service that handles authentication logic (register and login)
+ * Generates JWT tokens and validates user credentials
+ */
 @Injectable()
 export class AuthService {
   constructor(
@@ -19,6 +23,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
+  // Register a new user in the system
   async register(registerDto: RegisterDto) {
     const { email, name, password, role } = registerDto;
 
@@ -27,7 +32,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new ConflictException('El email ya está registrado');
+      throw new ConflictException('Email already registered');
     }
 
     const user = this.userRepository.create({
@@ -64,17 +69,17 @@ export class AuthService {
       .getOne();
 
     if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     if (!user.isActive) {
-      throw new UnauthorizedException('Usuario inactivo');
+      throw new UnauthorizedException('Inactive user');
     }
 
     const isPasswordValid = await user.comparePassword(password);
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Credenciales inválidas');
+      throw new UnauthorizedException('Invalid credentials');
     }
 
     const payload = { sub: user.id, email: user.email, role: user.role };

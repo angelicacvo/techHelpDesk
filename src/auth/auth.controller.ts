@@ -7,11 +7,16 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CurrentUser } from '../decorators/currentuser.decorator';
 import { User } from '../users/entities/user.entity';
 
-@ApiTags('auth')
+/**
+ * Controller that handles authentication endpoints
+ * Public endpoints: register and login (no JWT required)
+ */
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // Register a new user (public endpoint)
   @Post('register')
   @ApiOperation({ 
     summary: 'Register new user',
