@@ -39,7 +39,7 @@ export class ClientsService {
     });
 
     if (existingClient) {
-      throw new BadRequestException('Ya existe un perfil de cliente para este usuario');
+      throw new BadRequestException('A client profile already exists for this user');
     }
 
     const client = this.clientRepository.create({

@@ -48,7 +48,7 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     return {
-      message: 'Usuario registrado exitosamente',
+      message: 'User registered successfully',
       user: {
         id: user.id,
         name: user.name,
@@ -86,7 +86,7 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
 
     return {
-      message: 'Login exitoso',
+      message: 'Successful login',
       user: {
         id: user.id,
         name: user.name,
@@ -103,7 +103,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado o inactivo');
+      throw new UnauthorizedException('User not found or inactive');
     }
 
     return user;

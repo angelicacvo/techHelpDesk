@@ -75,7 +75,7 @@ describe('AuthService', () => {
       const result = await service.register(registerDto);
 
       expect(result).toEqual({
-        message: 'Usuario registrado exitosamente',
+        message: 'User registered successfully',
         user: {
           id: mockUser.id,
           name: mockUser.name,
@@ -182,7 +182,7 @@ describe('AuthService', () => {
       const result = await service.login(loginDto);
 
       expect(result).toEqual({
-        message: 'Login exitoso',
+        message: 'Successful login',
         user: {
           id: mockUser.id,
           name: mockUser.name,

@@ -39,7 +39,7 @@ export class TechniciansService {
     });
 
     if (existingTechnician) {
-      throw new BadRequestException('Ya existe un perfil de técnico para este usuario');
+      throw new BadRequestException('A technician profile already exists for this user');
     }
 
     const technician = this.technicianRepository.create({

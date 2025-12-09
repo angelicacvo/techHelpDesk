@@ -194,7 +194,7 @@ export class TicketsService {
 
     if (inProgressCount >= 5) {
       throw new BadRequestException(
-        `El técnico ha alcanzado el límite máximo de 5 tickets en progreso (actualmente tiene ${inProgressCount})`
+        `Technician has reached the maximum limit of 5 in-progress tickets (currently has ${inProgressCount})`
       );
     }
   }
