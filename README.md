@@ -1,6 +1,6 @@
 # TechHelpDesk - Technical Support System
 
-**Developed by:** Angelica Correa Villegas - Clan Musa  
+**Developed by:** Angelica Maria Cuervo Marin - Clan ubuntu  
 **Repository:** https://github.com/angelicacvo/techHelpDesk
 
 ---
@@ -416,25 +416,10 @@ npm run format          # Prettier
 
 ---
 
-## License
-
-UNLICENSED - Educational project for Riwi
-
----
-
 ## Developer
 
-**Angelica Correa Villegas**  
-**Clan:** Musa  
+**Angelica María Cuervo Marín**  
+**Clan:** Ubuntu  
 **GitHub:** [@angelicacvo](https://github.com/angelicacvo)  
 **Email:** angiemarin0707@gmail.com
 
----
-
-## Acknowledgments
-
-Project developed as performance test for the **Node.js with NestJS and TypeORM** module at Riwi.
-
----
-
-Happy Coding!
