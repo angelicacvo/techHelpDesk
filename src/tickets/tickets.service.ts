@@ -40,20 +40,23 @@ export class TicketsService {
       throw new NotFoundException('Cliente no encontrado');
     }
 
-    let technician = null;
+    let technician: Technician | undefined = undefined;
     if (createTicketDto.technicianId) {
-      technician = await this.technicianRepository.findOne({
+      const foundTechnician = await this.technicianRepository.findOne({
         where: { id: createTicketDto.technicianId },
       });
-      if (!technician) {
+      if (!foundTechnician) {
         throw new NotFoundException('Técnico no encontrado');
       }
 
       await this.validateTechnicianWorkload(createTicketDto.technicianId);
+      technician = foundTechnician;
     }
 
     const ticket = this.ticketRepository.create({
-      ...createTicketDto,
+      title: createTicketDto.title,
+      description: createTicketDto.description,
+      priority: createTicketDto.priority,
       category,
       client,
       technician,
