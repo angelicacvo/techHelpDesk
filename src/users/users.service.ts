@@ -5,6 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm/repository/Repository.js';
 import { User } from './entities/user.entity';
 
+/**
+ * Service that handles CRUD operations for users
+ * Only accessible by ADMIN role
+ */
 @Injectable()
 export class UsersService {
   constructor(
@@ -12,12 +16,13 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) { }
 
+  // Create a new user (validates email uniqueness)
   async create(createUserDto: CreateUserDto): Promise<User> {
     const existingUser = await this.userRepository.findOne({
       where: { email: createUserDto.email },
     });
     if (existingUser) {
-      throw new BadRequestException('El email ya está registrado');
+      throw new BadRequestException('Email already registered');
     }
 
     const user = this.userRepository.create(createUserDto);
@@ -38,7 +43,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     return user;

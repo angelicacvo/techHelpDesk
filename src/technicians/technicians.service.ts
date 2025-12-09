@@ -7,6 +7,10 @@ import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../common/enums/user-role.enum';
 
+/**
+ * Service that handles CRUD operations for technician profiles
+ * Links users with TECHNICIAN role to their technical details and specialties
+ */
 @Injectable()
 export class TechniciansService {
   constructor(
@@ -16,17 +20,18 @@ export class TechniciansService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  // Create a technician profile (validates user exists and has TECHNICIAN role)
   async create(createTechnicianDto: CreateTechnicianDto): Promise<Technician> {
     const user = await this.userRepository.findOne({
       where: { id: createTechnicianDto.userId },
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     if (user.role !== UserRole.TECHNICIAN) {
-      throw new BadRequestException('El usuario debe tener rol TECHNICIAN');
+      throw new BadRequestException('User must have TECHNICIAN role');
     }
 
     const existingTechnician = await this.technicianRepository.findOne({
@@ -73,7 +78,7 @@ export class TechniciansService {
     });
 
     if (!technician) {
-      throw new NotFoundException(`Técnico con ID ${id} no encontrado`);
+      throw new NotFoundException(`Technician with ID ${id} not found`);
     }
 
     return technician;

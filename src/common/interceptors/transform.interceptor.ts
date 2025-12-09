@@ -7,16 +7,25 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+/**
+ * Interfaz para estandarizar las respuestas de la API
+ */
 export interface Response<T> {
-  success: boolean;
-  data: T;
-  message: string;
+  success: boolean; // Indica si la operación fue exitosa
+  data: T; // Los datos de respuesta
+  message: string; // Mensaje descriptivo
 }
 
+/**
+ * Interceptor that transforms all API responses
+ * Wraps data in a standard format: { success, data, message }
+ * Applied globally in main.ts with app.useGlobalInterceptors()
+ */
 @Injectable()
 export class TransformInterceptor<T>
   implements NestInterceptor<T, Response<T>>
 {
+  // Transforms the response before sending it to the client
   intercept(
     context: ExecutionContext,
     next: CallHandler,

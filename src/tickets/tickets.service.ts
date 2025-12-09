@@ -12,6 +12,10 @@ import { TicketStatus } from '../common/enums/ticket-status.enum';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../common/enums/user-role.enum';
 
+/**
+ * Service that handles the business logic for support tickets
+ * Includes status validations, technician assignment and role-based access control
+ */
 @Injectable()
 export class TicketsService {
   constructor(
@@ -25,19 +29,24 @@ export class TicketsService {
     private readonly technicianRepository: Repository<Technician>,
   ) {}
 
+  /**
+   * Creates a new support ticket
+   * Validates that category, client and technician (if applicable) exist
+   * If technician is assigned, validates they don't have more than 5 in-progress tickets
+   */
   async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
     const category = await this.categoryRepository.findOne({
       where: { id: createTicketDto.categoryId },
     });
     if (!category) {
-      throw new NotFoundException('Categoría no encontrada');
+      throw new NotFoundException('Category not found');
     }
 
     const client = await this.clientRepository.findOne({
       where: { id: createTicketDto.clientId },
     });
     if (!client) {
-      throw new NotFoundException('Cliente no encontrado');
+      throw new NotFoundException('Client not found');
     }
 
     let technician: Technician | undefined = undefined;
@@ -46,7 +55,7 @@ export class TicketsService {
         where: { id: createTicketDto.technicianId },
       });
       if (!foundTechnician) {
-        throw new NotFoundException('Técnico no encontrado');
+        throw new NotFoundException('Technician not found');
       }
 
       await this.validateTechnicianWorkload(createTicketDto.technicianId);
@@ -79,7 +88,7 @@ export class TicketsService {
     });
 
     if (!ticket) {
-      throw new NotFoundException(`Ticket con ID ${id} no encontrado`);
+      throw new NotFoundException(`Ticket with ID ${id} not found`);
     }
 
     return ticket;
@@ -159,18 +168,18 @@ export class TicketsService {
     };
 
     if (currentStatus === newStatus) {
-      throw new BadRequestException(`El ticket ya está en estado ${newStatus}`);
+      throw new BadRequestException(`Ticket is already in ${newStatus} status`);
     }
 
     if (currentStatus === TicketStatus.CLOSED) {
-      throw new BadRequestException('No se puede cambiar el estado de un ticket cerrado');
+      throw new BadRequestException('Cannot change status of a closed ticket');
     }
 
     const allowedTransitions = validTransitions[currentStatus];
     if (!allowedTransitions.includes(newStatus)) {
       throw new BadRequestException(
-        `Transición de estado inválida: ${currentStatus} → ${newStatus}. ` +
-        `Transiciones permitidas desde ${currentStatus}: ${allowedTransitions.join(', ')}`
+        `Invalid status transition: ${currentStatus} → ${newStatus}. ` +
+        `Allowed transitions from ${currentStatus}: ${allowedTransitions.join(', ')}`
       );
     }
   }

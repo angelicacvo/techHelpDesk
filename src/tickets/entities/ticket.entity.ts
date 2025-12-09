@@ -13,6 +13,12 @@ import { Category } from '../../categories/entities/category.entity';
 import { Client } from '../../clients/entities/client.entity';
 import { Technician } from '../../technicians/entities/technician.entity';
 
+/**
+ * Ticket entity representing support tickets
+ * Each ticket has a category, client, and optionally a technician
+ * Status flow: OPEN -> IN_PROGRESS -> RESOLVED -> CLOSED
+ * Priority levels: low, medium, high, critical
+ */
 @Entity('tickets')
 export class Ticket {
   @PrimaryGeneratedColumn('uuid')

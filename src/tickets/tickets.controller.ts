@@ -11,6 +11,13 @@ import { UserRole } from '../common/enums/user-role.enum';
 import { CurrentUser } from '../decorators/currentuser.decorator';
 import { User } from '../users/entities/user.entity';
 
+/**
+ * Controller that handles ticket management endpoints
+ * Different roles have different access levels:
+ * - ADMIN: Full access to all tickets
+ * - TECHNICIAN: Access to assigned tickets and status updates
+ * - CLIENT: Can create tickets and view their own
+ */
 @ApiTags('Tickets')
 @ApiBearerAuth('JWT-auth')
 @Controller('tickets')
