@@ -8,7 +8,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
-import { CurrentUser } from '../decorator/currentuser.decorator';
+import { CurrentUser } from '../decorators/currentuser.decorator';
 import { User } from '../users/entities/user.entity';
 
 @ApiTags('Tickets')
