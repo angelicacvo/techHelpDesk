@@ -6,36 +6,39 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
+/**
+ * Función bootstrap que inicializa la aplicación NestJS
+ * Configura pipes globales, filtros, interceptores, CORS y Swagger
+ */
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn'],
+    logger: ['error', 'warn'], // Solo logs de errores y advertencias en producción
   });
   const config = app.get(ConfigService);
 
+  // Configurar validación automática con class-validator en todos los endpoints
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
+      whitelist: true, // Elimina propiedades no definidas en el DTO
+      forbidNonWhitelisted: true, // Lanza error si hay propiedades no permitidas
+      transform: true, // Transforma automáticamente los tipos de datos
     }),
   );
 
+  // Aplicar filtro global para formatear excepciones HTTP
   app.useGlobalFilters(new HttpExceptionFilter());
+  
+  // Aplicar interceptor global para transformar todas las respuestas
   app.useGlobalInterceptors(new TransformInterceptor());
 
+  // Enable CORS to allow requests from frontend
   app.enableCors();
 
-  // Swagger configuration
+  // Swagger configuration for interactive API documentation
   const swaggerConfig = new DocumentBuilder()
     .setTitle('TechHelpDesk API')
     .setDescription('REST API for technical support ticket management system')
     .setVersion('1.0')
-    .addTag('auth', 'User authentication and registration')
-    .addTag('users', 'System user management')
-    .addTag('categories', 'Ticket category management')
-    .addTag('clients', 'Client profile management')
-    .addTag('technicians', 'Technician profile management')
-    .addTag('tickets', 'Support ticket management')
     .addBearerAuth(
       {
         type: 'http',

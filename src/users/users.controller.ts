@@ -8,7 +8,11 @@ import { UserRole } from '../common/enums/user-role.enum';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
-@ApiTags('users')
+/**
+ * Controller that handles user CRUD operations
+ * All endpoints require ADMIN role
+ */
+@ApiTags('Users')
 @ApiBearerAuth('JWT-auth')
 @Controller('users')
 export class UsersController {

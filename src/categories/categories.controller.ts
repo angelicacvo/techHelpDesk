@@ -8,6 +8,10 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRole } from '../common/enums/user-role.enum';
 
+/**
+ * Controller that handles category endpoints
+ * All operations require ADMIN role
+ */
 @ApiTags('Categories')
 @ApiBearerAuth('JWT-auth')
 @Controller('categories')

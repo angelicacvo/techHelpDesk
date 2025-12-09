@@ -5,6 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 
+/**
+ * Service that handles CRUD operations for ticket categories
+ * Categories are used to classify support tickets
+ */
 @Injectable()
 export class CategoriesService {
   constructor(
@@ -12,13 +16,14 @@ export class CategoriesService {
     private readonly categoryRepository: Repository<Category>,
   ) {}
 
+  // Create a new category (validates name uniqueness)
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
     const existingCategory = await this.categoryRepository.findOne({
       where: { name: createCategoryDto.name },
     });
     
     if (existingCategory) {
-      throw new BadRequestException('Ya existe una categoría con ese nombre');
+      throw new BadRequestException('A category with that name already exists');
     }
 
     const category = this.categoryRepository.create(createCategoryDto);
@@ -38,7 +43,7 @@ export class CategoriesService {
     });
 
     if (!category) {
-      throw new NotFoundException(`Categoría con ID ${id} no encontrada`);
+      throw new NotFoundException(`Category with ID ${id} not found`);
     }
 
     return category;

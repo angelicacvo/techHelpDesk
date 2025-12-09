@@ -214,7 +214,7 @@ describe('AuthService', () => {
       mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
       await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
-      await expect(service.login(loginDto)).rejects.toThrow('Credenciales inválidas');
+      await expect(service.login(loginDto)).rejects.toThrow('Invalid credentials');
     });
 
     it('should throw UnauthorizedException when password is invalid', async () => {
@@ -239,7 +239,7 @@ describe('AuthService', () => {
       mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
       await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
-      await expect(service.login(loginDto)).rejects.toThrow('Credenciales inválidas');
+      await expect(service.login(loginDto)).rejects.toThrow('Invalid credentials');
     });
 
     it('should throw UnauthorizedException when user is inactive', async () => {
@@ -264,7 +264,7 @@ describe('AuthService', () => {
       mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
       await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
-      await expect(service.login(loginDto)).rejects.toThrow('Usuario inactivo');
+      await expect(service.login(loginDto)).rejects.toThrow('Inactive user');
     });
   });
 

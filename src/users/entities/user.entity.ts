@@ -10,6 +10,11 @@ import {
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '../../common/enums/user-role.enum';
 
+/**
+ * User entity representing system users
+ * Passwords are automatically hashed before insert/update using bcrypt
+ * Supports three roles: ADMIN, TECHNICIAN, CLIENT
+ */
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')

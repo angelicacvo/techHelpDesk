@@ -7,6 +7,10 @@ import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { UserRole } from '../common/enums/user-role.enum';
 
+/**
+ * Service that handles CRUD operations for client profiles
+ * Links users with CLIENT role to their client details
+ */
 @Injectable()
 export class ClientsService {
   constructor(
@@ -16,17 +20,18 @@ export class ClientsService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  // Create a client profile (validates user exists and has CLIENT role)
   async create(createClientDto: CreateClientDto): Promise<Client> {
     const user = await this.userRepository.findOne({
       where: { id: createClientDto.userId },
     });
 
     if (!user) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new NotFoundException('User not found');
     }
 
     if (user.role !== UserRole.CLIENT) {
-      throw new BadRequestException('El usuario debe tener rol CLIENT');
+      throw new BadRequestException('User must have CLIENT role');
     }
 
     const existingClient = await this.clientRepository.findOne({
@@ -73,7 +78,7 @@ export class ClientsService {
     });
 
     if (!client) {
-      throw new NotFoundException(`Cliente con ID ${id} no encontrado`);
+      throw new NotFoundException(`Client with ID ${id} not found`);
     }
 
     return client;
