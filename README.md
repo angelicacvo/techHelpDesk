@@ -1,24 +1,5 @@
 
-### HU-14: Docker Deployment (Extra)
-**As** a DevOps  
-**I want** to containerize the application  
-**So that** deployment is facilitated
-
-**Acceptance criteria:**
-- Functional Dockerfile for the API
-- docker-compose.yml with API and PostgreSQL
-- Persistent volume for the database
-- Configured environment variables
-
-**Tasks:**
-- Create multi-stage Dockerfile
-- Create docker-compose.yml
-- Configure networking between containers
-- Document deployment commands
-
----
-
-# Techo help desk: technical support
+# Techno help desk: technical support
 
 ## Technical Requirements
 
