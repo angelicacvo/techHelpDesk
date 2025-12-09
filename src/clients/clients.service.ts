@@ -1,26 +1,109 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Client } from './entities/client.entity';
+import { Repository } from 'typeorm';
+import { User } from '../users/entities/user.entity';
+import { UserRole } from '../common/enums/user-role.enum';
 
 @Injectable()
 export class ClientsService {
-  create(createClientDto: CreateClientDto) {
-    return 'This action adds a new client';
+  constructor(
+    @InjectRepository(Client)
+    private readonly clientRepository: Repository<Client>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+
+  async create(createClientDto: CreateClientDto): Promise<Client> {
+    const user = await this.userRepository.findOne({
+      where: { id: createClientDto.userId },
+    });
+
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    if (user.role !== UserRole.CLIENT) {
+      throw new BadRequestException('El usuario debe tener rol CLIENT');
+    }
+
+    const existingClient = await this.clientRepository.findOne({
+      where: { user: { id: createClientDto.userId } },
+    });
+
+    if (existingClient) {
+      throw new BadRequestException('Ya existe un perfil de cliente para este usuario');
+    }
+
+    const client = this.clientRepository.create({
+      ...createClientDto,
+      user,
+    });
+    return await this.clientRepository.save(client);
   }
 
-  findAll() {
-    return `This action returns all clients`;
+  async findAll(): Promise<Client[]> {
+    return await this.clientRepository.find({
+      relations: ['user', 'tickets'],
+      select: {
+        user: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} client`;
+  async findOne(id: string): Promise<Client> {
+    const client = await this.clientRepository.findOne({
+      where: { id },
+      relations: ['user', 'tickets'],
+      select: {
+        user: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      },
+    });
+
+    if (!client) {
+      throw new NotFoundException(`Cliente con ID ${id} no encontrado`);
+    }
+
+    return client;
   }
 
-  update(id: number, updateClientDto: UpdateClientDto) {
-    return `This action updates a #${id} client`;
+  async update(id: string, updateClientDto: UpdateClientDto): Promise<Client> {
+    const client = await this.findOne(id);
+
+    if (updateClientDto.userId && updateClientDto.userId !== client.user.id) {
+      const user = await this.userRepository.findOne({
+        where: { id: updateClientDto.userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+
+      if (user.role !== UserRole.CLIENT) {
+        throw new BadRequestException('El usuario debe tener rol CLIENT');
+      }
+
+      client.user = user;
+    }
+
+    Object.assign(client, updateClientDto);
+    return await this.clientRepository.save(client);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} client`;
+  async remove(id: string): Promise<void> {
+    const client = await this.findOne(id);
+    await this.clientRepository.remove(client);
   }
 }
