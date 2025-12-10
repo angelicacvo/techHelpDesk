@@ -27,11 +27,11 @@ export class ClientsService {
   // Create a client profile (validates user exists and has CLIENT role)
   async create(createClientDto: CreateClientDto): Promise<Client> {
     const user = await this.userRepository.findOne({
-      where: { id: createClientDto.userId },
+      where: { email: createClientDto.userEmail },
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('User not found with that email');
     }
 
     if (user.role !== UserRole.CLIENT) {
@@ -39,7 +39,7 @@ export class ClientsService {
     }
 
     const existingClient = await this.clientRepository.findOne({
-      where: { user: { id: createClientDto.userId } },
+      where: { user: { id: user.id } },
     });
 
     if (existingClient) {
@@ -49,7 +49,9 @@ export class ClientsService {
     }
 
     const client = this.clientRepository.create({
-      ...createClientDto,
+      name: createClientDto.name,
+      contactEmail: createClientDto.contactEmail,
+      company: createClientDto.company,
       user,
     });
     return await this.clientRepository.save(client);

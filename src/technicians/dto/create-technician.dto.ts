@@ -1,15 +1,27 @@
 import {
   IsBoolean,
+  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   MaxLength,
   MinLength,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateTechnicianDto {
+  @ApiProperty({
+    description: 'Full name of the technician',
+    example: 'Ana Martinez',
+    minLength: 3,
+    maxLength: 100,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(3)
+  @MaxLength(100)
+  name: string;
+
   @ApiProperty({
     description: 'Technician specialty',
     example: 'Hardware Support',
@@ -32,10 +44,10 @@ export class CreateTechnicianDto {
   availability?: boolean;
 
   @ApiProperty({
-    description: 'User ID associated with the technician',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'Email of the user to associate with this technician profile',
+    example: 'technician@example.com',
   })
-  @IsUUID()
+  @IsEmail()
   @IsNotEmpty()
-  userId: string;
+  userEmail: string;
 }

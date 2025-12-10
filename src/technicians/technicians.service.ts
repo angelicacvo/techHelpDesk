@@ -27,11 +27,11 @@ export class TechniciansService {
   // Create a technician profile (validates user exists and has TECHNICIAN role)
   async create(createTechnicianDto: CreateTechnicianDto): Promise<Technician> {
     const user = await this.userRepository.findOne({
-      where: { id: createTechnicianDto.userId },
+      where: { email: createTechnicianDto.userEmail },
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('User not found with that email');
     }
 
     if (user.role !== UserRole.TECHNICIAN) {
@@ -39,7 +39,7 @@ export class TechniciansService {
     }
 
     const existingTechnician = await this.technicianRepository.findOne({
-      where: { user: { id: createTechnicianDto.userId } },
+      where: { user: { id: user.id } },
     });
 
     if (existingTechnician) {
@@ -49,7 +49,9 @@ export class TechniciansService {
     }
 
     const technician = this.technicianRepository.create({
-      ...createTechnicianDto,
+      name: createTechnicianDto.name,
+      specialty: createTechnicianDto.specialty,
+      availability: createTechnicianDto.availability,
       user,
     });
     return await this.technicianRepository.save(technician);

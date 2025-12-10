@@ -3,7 +3,6 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUUID,
   MaxLength,
   MinLength,
 } from 'class-validator';
@@ -41,10 +40,10 @@ export class CreateClientDto {
   company?: string;
 
   @ApiProperty({
-    description: 'User ID associated with the client',
-    example: '123e4567-e89b-12d3-a456-426614174000',
+    description: 'Email of the user to associate with this client profile',
+    example: 'user@example.com',
   })
-  @IsUUID()
+  @IsEmail()
   @IsNotEmpty()
-  userId: string;
+  userEmail: string;
 }

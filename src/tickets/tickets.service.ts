@@ -193,30 +193,26 @@ export class TicketsService {
     currentStatus: TicketStatus,
     newStatus: TicketStatus,
   ): void {
-    // Define allowed status transitions
     const validTransitions: Record<TicketStatus, TicketStatus[]> = {
       [TicketStatus.OPEN]: [TicketStatus.IN_PROGRESS, TicketStatus.CLOSED],
       [TicketStatus.IN_PROGRESS]: [TicketStatus.RESOLVED, TicketStatus.CLOSED],
-      [TicketStatus.RESOLVED]: [TicketStatus.CLOSED], // Only can close a resolved ticket
-      [TicketStatus.CLOSED]: [], // Closed tickets cannot be changed
+      [TicketStatus.RESOLVED]: [TicketStatus.CLOSED, TicketStatus.IN_PROGRESS],
+      [TicketStatus.CLOSED]: [],
     };
 
-    // Validate same status
     if (currentStatus === newStatus) {
       throw new BadRequestException(`Ticket is already in ${newStatus} status`);
     }
 
-    // Validate closed tickets cannot be modified
     if (currentStatus === TicketStatus.CLOSED) {
       throw new BadRequestException('Cannot change status of a closed ticket');
     }
 
-    // Validate transition is allowed
     const allowedTransitions = validTransitions[currentStatus];
     if (!allowedTransitions.includes(newStatus)) {
       throw new BadRequestException(
         `Invalid status transition: ${currentStatus} → ${newStatus}. ` +
-          `Allowed transitions from ${currentStatus}: ${allowedTransitions.join(', ') || 'none'}`,
+          `Allowed transitions from ${currentStatus}: ${allowedTransitions.join(', ')}`,
       );
     }
   }
