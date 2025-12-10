@@ -6,10 +6,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-/**
- * Función bootstrap que inicializa la aplicación NestJS
- * Configura pipes globales, filtros, interceptores, CORS y Swagger
- */
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn'], // Solo logs de errores y advertencias en producción

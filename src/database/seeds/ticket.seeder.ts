@@ -21,16 +21,16 @@ export default class TicketSeeder implements Seeder {
     const categories = await categoryRepository.find();
 
     if (clients.length === 0 || categories.length === 0) {
-      console.log('⚠️  No clients or categories found. Skipping ticket seeding.');
+      console.log('No clients or categories found. Skipping ticket seeding.');
       return;
     }
 
     const statuses = Object.values(TicketStatus);
     const priorities = Object.values(TicketPriority);
 
-    console.log('🎫 Seeding tickets...');
+    console.log('Seeding tickets...');
 
-    const ticketsToCreate = [];
+    const ticketsToCreate: Ticket[] = [];
 
     // Generate 30 random tickets
     for (let i = 0; i < 30; i++) {
@@ -43,7 +43,7 @@ export default class TicketSeeder implements Seeder {
       const shouldAssignTechnician = Math.random() > 0.3 && technicians.length > 0;
       const randomTechnician = shouldAssignTechnician 
         ? technicians[Math.floor(Math.random() * technicians.length)]
-        : null;
+        : undefined;
 
       const ticket = ticketRepository.create({
         title: faker.helpers.arrayElement([
@@ -80,6 +80,6 @@ export default class TicketSeeder implements Seeder {
     }
 
     await ticketRepository.save(ticketsToCreate);
-    console.log(`✅ Created ${ticketsToCreate.length} tickets`);
+    console.log(`Created ${ticketsToCreate.length} tickets`);
   }
 }
