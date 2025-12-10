@@ -63,14 +63,12 @@ export default class UserSeeder implements Seeder {
       console.log('Client user created');
     }
 
-    // Generar técnicos adicionales con faker (cambia el número aquí)
-    await userFactory.saveMany(10, {
+    await userFactory.saveMany(5, {
       role: UserRole.TECHNICIAN,
       isActive: true,
     });
 
-    // Generar clientes adicionales con faker (cambia el número aquí)
-    await userFactory.saveMany(15, {
+    await userFactory.saveMany(5, {
       role: UserRole.CLIENT,
       isActive: true,
     });
