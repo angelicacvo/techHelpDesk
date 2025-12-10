@@ -33,7 +33,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
           ? exceptionResponse
           : (exceptionResponse as any).message || 'Error en la petición',
       error:
-        typeof exceptionResponse === 'object' && (exceptionResponse as any).error
+        typeof exceptionResponse === 'object' &&
+        (exceptionResponse as any).error
           ? (exceptionResponse as any).error
           : HttpStatus[status],
     };

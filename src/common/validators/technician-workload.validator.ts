@@ -31,7 +31,7 @@ export class TechnicianWorkloadValidator {
 
     if (inProgressCount >= 5) {
       throw new BadRequestException(
-        `Technician has reached the maximum limit of 5 in-progress tickets (currently has ${inProgressCount})`
+        `Technician has reached the maximum limit of 5 in-progress tickets (currently has ${inProgressCount})`,
       );
     }
   }

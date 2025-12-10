@@ -28,4 +28,3 @@ export class Category {
   @OneToMany(() => Ticket, (ticket) => ticket.category)
   tickets: Ticket[];
 }
-

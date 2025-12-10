@@ -35,13 +35,17 @@ export default class TicketSeeder implements Seeder {
     // Generate 30 random tickets
     for (let i = 0; i < 30; i++) {
       const randomClient = clients[Math.floor(Math.random() * clients.length)];
-      const randomCategory = categories[Math.floor(Math.random() * categories.length)];
-      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-      const randomPriority = priorities[Math.floor(Math.random() * priorities.length)];
-      
+      const randomCategory =
+        categories[Math.floor(Math.random() * categories.length)];
+      const randomStatus =
+        statuses[Math.floor(Math.random() * statuses.length)];
+      const randomPriority =
+        priorities[Math.floor(Math.random() * priorities.length)];
+
       // 70% chance to assign a technician
-      const shouldAssignTechnician = Math.random() > 0.3 && technicians.length > 0;
-      const randomTechnician = shouldAssignTechnician 
+      const shouldAssignTechnician =
+        Math.random() > 0.3 && technicians.length > 0;
+      const randomTechnician = shouldAssignTechnician
         ? technicians[Math.floor(Math.random() * technicians.length)]
         : undefined;
 

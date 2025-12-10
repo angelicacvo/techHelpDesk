@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
 import { JwtService } from '@nestjs/jwt';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
@@ -11,8 +10,6 @@ import { LoginDto } from './dto/login.dto';
 
 describe('AuthService', () => {
   let service: AuthService;
-  let userRepository: Repository<User>;
-  let jwtService: JwtService;
 
   const mockUserRepository = {
     findOne: jest.fn(),
@@ -41,8 +38,6 @@ describe('AuthService', () => {
     }).compile();
 
     service = module.get<AuthService>(AuthService);
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    jwtService = module.get<JwtService>(JwtService);
   });
 
   afterEach(() => {
@@ -115,7 +110,9 @@ describe('AuthService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(existingUser);
 
-      await expect(service.register(registerDto)).rejects.toThrow(ConflictException);
+      await expect(service.register(registerDto)).rejects.toThrow(
+        ConflictException,
+      );
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: registerDto.email },
       });
@@ -213,8 +210,12 @@ describe('AuthService', () => {
 
       mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
-      await expect(service.login(loginDto)).rejects.toThrow('Invalid credentials');
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
+      await expect(service.login(loginDto)).rejects.toThrow(
+        'Invalid credentials',
+      );
     });
 
     it('should throw UnauthorizedException when password is invalid', async () => {
@@ -238,8 +239,12 @@ describe('AuthService', () => {
 
       mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
-      await expect(service.login(loginDto)).rejects.toThrow('Invalid credentials');
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
+      await expect(service.login(loginDto)).rejects.toThrow(
+        'Invalid credentials',
+      );
     });
 
     it('should throw UnauthorizedException when user is inactive', async () => {
@@ -263,7 +268,9 @@ describe('AuthService', () => {
 
       mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
 
-      await expect(service.login(loginDto)).rejects.toThrow(UnauthorizedException);
+      await expect(service.login(loginDto)).rejects.toThrow(
+        UnauthorizedException,
+      );
       await expect(service.login(loginDto)).rejects.toThrow('Inactive user');
     });
   });
@@ -294,7 +301,9 @@ describe('AuthService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.validateUser(userId)).rejects.toThrow(UnauthorizedException);
+      await expect(service.validateUser(userId)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('should throw UnauthorizedException when user is inactive', async () => {
@@ -302,7 +311,9 @@ describe('AuthService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.validateUser(userId)).rejects.toThrow(UnauthorizedException);
+      await expect(service.validateUser(userId)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });

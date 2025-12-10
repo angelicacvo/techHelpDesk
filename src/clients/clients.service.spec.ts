@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ClientsService } from './clients.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Client } from './entities/client.entity';
 import { User } from '../users/entities/user.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
@@ -11,8 +10,6 @@ import { UpdateClientDto } from './dto/update-client.dto';
 
 describe('ClientsService', () => {
   let service: ClientsService;
-  let clientRepository: Repository<Client>;
-  let userRepository: Repository<User>;
 
   const mockClientRepository = {
     findOne: jest.fn(),
@@ -42,8 +39,6 @@ describe('ClientsService', () => {
     }).compile();
 
     service = module.get<ClientsService>(ClientsService);
-    clientRepository = module.get<Repository<Client>>(getRepositoryToken(Client));
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   afterEach(() => {
@@ -92,7 +87,9 @@ describe('ClientsService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.create(createClientDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createClientDto)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw BadRequestException when user role is not CLIENT', async () => {
@@ -109,7 +106,9 @@ describe('ClientsService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
 
-      await expect(service.create(createClientDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createClientDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw BadRequestException when client profile already exists', async () => {
@@ -127,7 +126,9 @@ describe('ClientsService', () => {
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       mockClientRepository.findOne.mockResolvedValue({ id: 'existing-client' });
 
-      await expect(service.create(createClientDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createClientDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -168,7 +169,9 @@ describe('ClientsService', () => {
     it('should throw NotFoundException when client not found', async () => {
       mockClientRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-uuid')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('invalid-uuid')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

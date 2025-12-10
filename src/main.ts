@@ -6,7 +6,6 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn'], // Solo logs de errores y advertencias en producción
@@ -24,7 +23,7 @@ async function bootstrap() {
 
   // Aplicar filtro global para formatear excepciones HTTP
   app.useGlobalFilters(new HttpExceptionFilter());
-  
+
   // Aplicar interceptor global para transformar todas las respuestas
   app.useGlobalInterceptors(new TransformInterceptor());
 
@@ -62,4 +61,3 @@ async function bootstrap() {
   console.log(`Swagger documentation: http://localhost:${port}/api/docs`);
 }
 bootstrap();
-

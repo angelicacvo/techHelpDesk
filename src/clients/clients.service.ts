@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -39,7 +43,9 @@ export class ClientsService {
     });
 
     if (existingClient) {
-      throw new BadRequestException('A client profile already exists for this user');
+      throw new BadRequestException(
+        'A client profile already exists for this user',
+      );
     }
 
     const client = this.clientRepository.create({

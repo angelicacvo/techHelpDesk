@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import {
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
@@ -20,11 +24,11 @@ export class CategoryExistsValidator implements ValidatorConstraintInterface {
   // Verifies in the database if the category exists
   async validate(categoryId: string): Promise<boolean> {
     if (!categoryId) return false;
-    
+
     const category = await this.categoryRepository.findOne({
       where: { id: categoryId },
     });
-    
+
     return !!category;
   }
 

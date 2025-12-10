@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+  IsOptional,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateCategoryDto {

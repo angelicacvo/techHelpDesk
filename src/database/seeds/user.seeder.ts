@@ -5,7 +5,10 @@ import { UserRole } from '../../common/enums/user-role.enum';
 import * as bcrypt from 'bcrypt';
 
 export default class UserSeeder implements Seeder {
-  public async run(dataSource: DataSource, factoryManager: SeederFactoryManager): Promise<void> {
+  public async run(
+    dataSource: DataSource,
+    factoryManager: SeederFactoryManager,
+  ): Promise<void> {
     const userRepository = dataSource.getRepository(User);
     const userFactory = factoryManager.get(User);
 
@@ -61,13 +64,13 @@ export default class UserSeeder implements Seeder {
     }
 
     // Generar técnicos adicionales con faker (cambia el número aquí)
-    const technicians = await userFactory.saveMany(10, {
+    await userFactory.saveMany(10, {
       role: UserRole.TECHNICIAN,
       isActive: true,
     });
 
     // Generar clientes adicionales con faker (cambia el número aquí)
-    const clients = await userFactory.saveMany(15, {
+    await userFactory.saveMany(15, {
       role: UserRole.CLIENT,
       isActive: true,
     });

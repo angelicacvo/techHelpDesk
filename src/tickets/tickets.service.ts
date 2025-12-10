@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { UpdateTicketStatusDto } from './dto/update-ticket-status.dto';
@@ -77,14 +82,26 @@ export class TicketsService {
 
   async findAll(): Promise<Ticket[]> {
     return await this.ticketRepository.find({
-      relations: ['category', 'client', 'technician', 'client.user', 'technician.user'],
+      relations: [
+        'category',
+        'client',
+        'technician',
+        'client.user',
+        'technician.user',
+      ],
     });
   }
 
   async findOne(id: string): Promise<Ticket> {
     const ticket = await this.ticketRepository.findOne({
       where: { id },
-      relations: ['category', 'client', 'technician', 'client.user', 'technician.user'],
+      relations: [
+        'category',
+        'client',
+        'technician',
+        'client.user',
+        'technician.user',
+      ],
     });
 
     if (!ticket) {
@@ -108,10 +125,17 @@ export class TicketsService {
     });
   }
 
-  async update(id: string, updateTicketDto: UpdateTicketDto, user: User): Promise<Ticket> {
+  async update(
+    id: string,
+    updateTicketDto: UpdateTicketDto,
+    user: User,
+  ): Promise<Ticket> {
     const ticket = await this.findOne(id);
 
-    if (updateTicketDto.categoryId && updateTicketDto.categoryId !== ticket.category.id) {
+    if (
+      updateTicketDto.categoryId &&
+      updateTicketDto.categoryId !== ticket.category.id
+    ) {
       const category = await this.categoryRepository.findOne({
         where: { id: updateTicketDto.categoryId },
       });
@@ -139,12 +163,18 @@ export class TicketsService {
     return await this.ticketRepository.save(ticket);
   }
 
-  async updateStatus(id: string, updateStatusDto: UpdateTicketStatusDto, user: User): Promise<Ticket> {
+  async updateStatus(
+    id: string,
+    updateStatusDto: UpdateTicketStatusDto,
+    user: User,
+  ): Promise<Ticket> {
     const ticket = await this.findOne(id);
 
     if (user.role === UserRole.TECHNICIAN) {
       if (!ticket.technician || ticket.technician.user.id !== user.id) {
-        throw new ForbiddenException('Solo puedes actualizar tickets asignados a ti');
+        throw new ForbiddenException(
+          'Solo puedes actualizar tickets asignados a ti',
+        );
       }
     }
 
@@ -159,7 +189,10 @@ export class TicketsService {
     await this.ticketRepository.remove(ticket);
   }
 
-  private validateStatusTransition(currentStatus: TicketStatus, newStatus: TicketStatus): void {
+  private validateStatusTransition(
+    currentStatus: TicketStatus,
+    newStatus: TicketStatus,
+  ): void {
     const validTransitions: Record<TicketStatus, TicketStatus[]> = {
       [TicketStatus.OPEN]: [TicketStatus.IN_PROGRESS, TicketStatus.CLOSED],
       [TicketStatus.IN_PROGRESS]: [TicketStatus.RESOLVED, TicketStatus.CLOSED],
@@ -179,12 +212,14 @@ export class TicketsService {
     if (!allowedTransitions.includes(newStatus)) {
       throw new BadRequestException(
         `Invalid status transition: ${currentStatus} → ${newStatus}. ` +
-        `Allowed transitions from ${currentStatus}: ${allowedTransitions.join(', ')}`
+          `Allowed transitions from ${currentStatus}: ${allowedTransitions.join(', ')}`,
       );
     }
   }
 
-  private async validateTechnicianWorkload(technicianId: string): Promise<void> {
+  private async validateTechnicianWorkload(
+    technicianId: string,
+  ): Promise<void> {
     const inProgressCount = await this.ticketRepository.count({
       where: {
         technician: { id: technicianId },
@@ -194,7 +229,7 @@ export class TicketsService {
 
     if (inProgressCount >= 5) {
       throw new BadRequestException(
-        `Technician has reached the maximum limit of 5 in-progress tickets (currently has ${inProgressCount})`
+        `Technician has reached the maximum limit of 5 in-progress tickets (currently has ${inProgressCount})`,
       );
     }
   }

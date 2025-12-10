@@ -6,7 +6,11 @@ import { Ticket } from './entities/ticket.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Client } from '../clients/entities/client.entity';
 import { Technician } from '../technicians/entities/technician.entity';
-import { NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { TicketStatus } from '../common/enums/ticket-status.enum';
 import { TicketPriority } from '../common/enums/ticket-priority.enum';
 import { UserRole } from '../common/enums/user-role.enum';
@@ -65,10 +69,18 @@ describe('TicketsService', () => {
     }).compile();
 
     service = module.get<TicketsService>(TicketsService);
-    ticketRepository = module.get<Repository<Ticket>>(getRepositoryToken(Ticket));
-    categoryRepository = module.get<Repository<Category>>(getRepositoryToken(Category));
-    clientRepository = module.get<Repository<Client>>(getRepositoryToken(Client));
-    technicianRepository = module.get<Repository<Technician>>(getRepositoryToken(Technician));
+    ticketRepository = module.get<Repository<Ticket>>(
+      getRepositoryToken(Ticket),
+    );
+    categoryRepository = module.get<Repository<Category>>(
+      getRepositoryToken(Category),
+    );
+    clientRepository = module.get<Repository<Client>>(
+      getRepositoryToken(Client),
+    );
+    technicianRepository = module.get<Repository<Technician>>(
+      getRepositoryToken(Technician),
+    );
   });
 
   afterEach(() => {
@@ -132,7 +144,9 @@ describe('TicketsService', () => {
 
       mockCategoryRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.create(createTicketDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createTicketDto)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockCategoryRepository.findOne).toHaveBeenCalled();
     });
 
@@ -149,7 +163,9 @@ describe('TicketsService', () => {
       mockCategoryRepository.findOne.mockResolvedValue(mockCategory);
       mockClientRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.create(createTicketDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createTicketDto)).rejects.toThrow(
+        NotFoundException,
+      );
       expect(mockClientRepository.findOne).toHaveBeenCalled();
     });
 
@@ -165,7 +181,10 @@ describe('TicketsService', () => {
 
       const mockCategory = { id: 'category-uuid', name: 'Network' };
       const mockClient = { id: 'client-uuid', name: 'Jane Smith' };
-      const mockTechnician = { id: 'technician-uuid', specialty: 'Network Support' };
+      const mockTechnician = {
+        id: 'technician-uuid',
+        specialty: 'Network Support',
+      };
       const mockTicket = {
         id: 'ticket-uuid',
         ...createTicketDto,
@@ -203,14 +222,19 @@ describe('TicketsService', () => {
 
       const mockCategory = { id: 'category-uuid', name: 'Software' };
       const mockClient = { id: 'client-uuid', name: 'Test Client' };
-      const mockTechnician = { id: 'technician-uuid', specialty: 'Software Support' };
+      const mockTechnician = {
+        id: 'technician-uuid',
+        specialty: 'Software Support',
+      };
 
       mockCategoryRepository.findOne.mockResolvedValue(mockCategory);
       mockClientRepository.findOne.mockResolvedValue(mockClient);
       mockTechnicianRepository.findOne.mockResolvedValue(mockTechnician);
       mockTicketRepository.count.mockResolvedValue(5);
 
-      await expect(service.create(createTicketDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createTicketDto)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockTicketRepository.count).toHaveBeenCalledWith({
         where: {
           technician: { id: createTicketDto.technicianId },
@@ -247,7 +271,11 @@ describe('TicketsService', () => {
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
       mockTicketRepository.save.mockResolvedValue(updatedTicket);
 
-      const result = await service.updateStatus(ticketId, updateStatusDto, mockUser as any);
+      const result = await service.updateStatus(
+        ticketId,
+        updateStatusDto,
+        mockUser as any,
+      );
 
       expect(result.status).toBe(TicketStatus.IN_PROGRESS);
       expect(mockTicketRepository.save).toHaveBeenCalledWith(
@@ -281,7 +309,11 @@ describe('TicketsService', () => {
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
       mockTicketRepository.save.mockResolvedValue(updatedTicket);
 
-      const result = await service.updateStatus(ticketId, updateStatusDto, mockUser as any);
+      const result = await service.updateStatus(
+        ticketId,
+        updateStatusDto,
+        mockUser as any,
+      );
 
       expect(result.status).toBe(TicketStatus.RESOLVED);
     });
@@ -310,7 +342,11 @@ describe('TicketsService', () => {
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
       mockTicketRepository.save.mockResolvedValue(updatedTicket);
 
-      const result = await service.updateStatus(ticketId, updateStatusDto, mockUser as any);
+      const result = await service.updateStatus(
+        ticketId,
+        updateStatusDto,
+        mockUser as any,
+      );
 
       expect(result.status).toBe(TicketStatus.CLOSED);
     });
@@ -335,9 +371,9 @@ describe('TicketsService', () => {
 
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
 
-      await expect(service.updateStatus(ticketId, updateStatusDto, mockUser as any)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.updateStatus(ticketId, updateStatusDto, mockUser as any),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException when trying to update same status', async () => {
@@ -360,9 +396,9 @@ describe('TicketsService', () => {
 
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
 
-      await expect(service.updateStatus(ticketId, updateStatusDto, mockUser as any)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.updateStatus(ticketId, updateStatusDto, mockUser as any),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException when trying to update closed ticket', async () => {
@@ -385,9 +421,9 @@ describe('TicketsService', () => {
 
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
 
-      await expect(service.updateStatus(ticketId, updateStatusDto, mockUser as any)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        service.updateStatus(ticketId, updateStatusDto, mockUser as any),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw ForbiddenException when technician tries to update ticket not assigned to them', async () => {
@@ -411,9 +447,9 @@ describe('TicketsService', () => {
 
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
 
-      await expect(service.updateStatus(ticketId, updateStatusDto, mockUser as any)).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(
+        service.updateStatus(ticketId, updateStatusDto, mockUser as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should allow technician to update their own assigned ticket', async () => {
@@ -440,7 +476,11 @@ describe('TicketsService', () => {
       mockTicketRepository.findOne.mockResolvedValue(mockTicket);
       mockTicketRepository.save.mockResolvedValue(updatedTicket);
 
-      const result = await service.updateStatus(ticketId, updateStatusDto, mockUser as any);
+      const result = await service.updateStatus(
+        ticketId,
+        updateStatusDto,
+        mockUser as any,
+      );
 
       expect(result.status).toBe(TicketStatus.IN_PROGRESS);
     });
@@ -455,7 +495,11 @@ describe('TicketsService', () => {
           status: TicketStatus.OPEN,
           category: { id: 'cat-1', name: 'Hardware' },
           client: { id: 'client-1', name: 'Client 1', user: { id: 'user-1' } },
-          technician: { id: 'tech-1', specialty: 'Hardware', user: { id: 'user-2' } },
+          technician: {
+            id: 'tech-1',
+            specialty: 'Hardware',
+            user: { id: 'user-2' },
+          },
         },
         {
           id: 'ticket-2',
@@ -463,7 +507,11 @@ describe('TicketsService', () => {
           status: TicketStatus.IN_PROGRESS,
           category: { id: 'cat-2', name: 'Software' },
           client: { id: 'client-2', name: 'Client 2', user: { id: 'user-3' } },
-          technician: { id: 'tech-2', specialty: 'Software', user: { id: 'user-4' } },
+          technician: {
+            id: 'tech-2',
+            specialty: 'Software',
+            user: { id: 'user-4' },
+          },
         },
       ];
 
@@ -473,7 +521,13 @@ describe('TicketsService', () => {
 
       expect(result).toEqual(mockTickets);
       expect(mockTicketRepository.find).toHaveBeenCalledWith({
-        relations: ['category', 'client', 'technician', 'client.user', 'technician.user'],
+        relations: [
+          'category',
+          'client',
+          'technician',
+          'client.user',
+          'technician.user',
+        ],
       });
     });
   });
@@ -496,7 +550,13 @@ describe('TicketsService', () => {
       expect(result).toEqual(mockTicket);
       expect(mockTicketRepository.findOne).toHaveBeenCalledWith({
         where: { id: ticketId },
-        relations: ['category', 'client', 'technician', 'client.user', 'technician.user'],
+        relations: [
+          'category',
+          'client',
+          'technician',
+          'client.user',
+          'technician.user',
+        ],
       });
     });
 
@@ -504,7 +564,9 @@ describe('TicketsService', () => {
       const ticketId = 'invalid-uuid';
       mockTicketRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne(ticketId)).rejects.toThrow(NotFoundException);
+      await expect(service.findOne(ticketId)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

@@ -22,9 +22,10 @@ export interface Response<T> {
  * Applied globally in main.ts with app.useGlobalInterceptors()
  */
 @Injectable()
-export class TransformInterceptor<T>
-  implements NestInterceptor<T, Response<T>>
-{
+export class TransformInterceptor<T> implements NestInterceptor<
+  T,
+  Response<T>
+> {
   // Transforms the response before sending it to the client
   intercept(
     context: ExecutionContext,
@@ -44,9 +45,10 @@ export class TransformInterceptor<T>
     const method = request.method;
 
     if (method === 'POST') return 'Recurso creado exitosamente';
-    if (method === 'PATCH' || method === 'PUT') return 'Recurso actualizado exitosamente';
+    if (method === 'PATCH' || method === 'PUT')
+      return 'Recurso actualizado exitosamente';
     if (method === 'DELETE') return 'Recurso eliminado exitosamente';
-    
+
     return 'Operación exitosa';
   }
 }

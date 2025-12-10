@@ -1,9 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { UpdateTicketStatusDto } from './dto/update-ticket-status.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -26,7 +41,10 @@ export class TicketsController {
 
   @ApiOperation({ summary: 'Create a new ticket (Client or Admin)' })
   @ApiResponse({ status: 201, description: 'Ticket successfully created' })
-  @ApiResponse({ status: 400, description: 'Category or client not found, technician workload exceeded' })
+  @ApiResponse({
+    status: 400,
+    description: 'Category or client not found, technician workload exceeded',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.CLIENT, UserRole.ADMIN)
@@ -69,7 +87,10 @@ export class TicketsController {
 
   @ApiOperation({ summary: 'Get tickets by technician ID' })
   @ApiParam({ name: 'technicianId', description: 'Technician UUID' })
-  @ApiResponse({ status: 200, description: 'List of tickets assigned to the technician' })
+  @ApiResponse({
+    status: 200,
+    description: 'List of tickets assigned to the technician',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard)
   @Get('technician/:technicianId')
@@ -93,11 +114,19 @@ export class TicketsController {
     return this.ticketsService.update(id, updateTicketDto, user);
   }
 
-  @ApiOperation({ summary: 'Update ticket status (Admin or assigned Technician)' })
+  @ApiOperation({
+    summary: 'Update ticket status (Admin or assigned Technician)',
+  })
   @ApiParam({ name: 'id', description: 'Ticket UUID' })
-  @ApiResponse({ status: 200, description: 'Ticket status successfully updated' })
+  @ApiResponse({
+    status: 200,
+    description: 'Ticket status successfully updated',
+  })
   @ApiResponse({ status: 400, description: 'Invalid status transition' })
-  @ApiResponse({ status: 403, description: 'Forbidden - Can only update assigned tickets' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Can only update assigned tickets',
+  })
   @ApiResponse({ status: 404, description: 'Ticket not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(JwtAuthGuard, RolesGuard)

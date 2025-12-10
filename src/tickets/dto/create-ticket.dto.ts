@@ -1,4 +1,13 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID, MaxLength, MinLength, Validate } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+  MinLength,
+  Validate,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TicketPriority } from '../../common/enums/ticket-priority.enum';
 import { CategoryExistsValidator } from '../../common/validators/category-exists.validator';
@@ -19,7 +28,8 @@ export class CreateTicketDto {
 
   @ApiProperty({
     description: 'Detailed description of the issue',
-    example: 'The monitor in office 203 does not turn on, power cable has been checked and it still does not work',
+    example:
+      'The monitor in office 203 does not turn on, power cable has been checked and it still does not work',
   })
   @IsString()
   @IsNotEmpty()

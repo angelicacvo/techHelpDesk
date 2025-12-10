@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
+import {
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
+} from 'class-validator';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from '../../clients/entities/client.entity';
@@ -20,11 +24,11 @@ export class ClientExistsValidator implements ValidatorConstraintInterface {
   // Verifies in the database if the client exists
   async validate(clientId: string): Promise<boolean> {
     if (!clientId) return false;
-    
+
     const client = await this.clientRepository.findOne({
       where: { id: clientId },
     });
-    
+
     return !!client;
   }
 

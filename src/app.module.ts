@@ -26,5 +26,3 @@ import { TechniciansModule } from './technicians/technicians.module';
   providers: [],
 })
 export class AppModule {}
-
-

@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,7 +18,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) { }
+  ) {}
 
   // Create a new user (validates email uniqueness)
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -36,7 +40,6 @@ export class UsersService {
   }
 
   async findOne(id: string): Promise<User> {
-
     const user = await this.userRepository.findOne({
       where: { id },
       select: ['id', 'name', 'email', 'role', 'isActive'],
@@ -65,10 +68,10 @@ export class UsersService {
     return await this.userRepository.save(user);
   }
 
-  async remove(id: string): Promise<{ message: string }>  {
+  async remove(id: string): Promise<{ message: string }> {
     const user = await this.findOne(id);
     if (!user) throw new NotFoundException('User not found');
-    
+
     await this.userRepository.remove(user);
     return { message: 'User removed successfully' };
   }

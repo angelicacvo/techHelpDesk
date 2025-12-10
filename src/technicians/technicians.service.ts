@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTechnicianDto } from './dto/create-technician.dto';
 import { UpdateTechnicianDto } from './dto/update-technician.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -39,7 +43,9 @@ export class TechniciansService {
     });
 
     if (existingTechnician) {
-      throw new BadRequestException('A technician profile already exists for this user');
+      throw new BadRequestException(
+        'A technician profile already exists for this user',
+      );
     }
 
     const technician = this.technicianRepository.create({
@@ -84,10 +90,16 @@ export class TechniciansService {
     return technician;
   }
 
-  async update(id: string, updateTechnicianDto: UpdateTechnicianDto): Promise<Technician> {
+  async update(
+    id: string,
+    updateTechnicianDto: UpdateTechnicianDto,
+  ): Promise<Technician> {
     const technician = await this.findOne(id);
 
-    if (updateTechnicianDto.userId && updateTechnicianDto.userId !== technician.user.id) {
+    if (
+      updateTechnicianDto.userId &&
+      updateTechnicianDto.userId !== technician.user.id
+    ) {
       const user = await this.userRepository.findOne({
         where: { id: updateTechnicianDto.userId },
       });

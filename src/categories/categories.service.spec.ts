@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from './categories.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Category } from './entities/category.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -9,7 +8,6 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
-  let categoryRepository: Repository<Category>;
 
   const mockCategoryRepository = {
     findOne: jest.fn(),
@@ -31,7 +29,6 @@ describe('CategoriesService', () => {
     }).compile();
 
     service = module.get<CategoriesService>(CategoriesService);
-    categoryRepository = module.get<Repository<Category>>(getRepositoryToken(Category));
   });
 
   afterEach(() => {
@@ -69,7 +66,9 @@ describe('CategoriesService', () => {
 
       mockCategoryRepository.findOne.mockResolvedValue({ id: 'existing-uuid' });
 
-      await expect(service.create(createCategoryDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createCategoryDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -110,7 +109,9 @@ describe('CategoriesService', () => {
     it('should throw NotFoundException when category not found', async () => {
       mockCategoryRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-uuid')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('invalid-uuid')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -153,7 +154,9 @@ describe('CategoriesService', () => {
         .mockResolvedValueOnce(existingCategory)
         .mockResolvedValueOnce({ id: 'another-uuid' });
 
-      await expect(service.update(categoryId, updateCategoryDto)).rejects.toThrow(BadRequestException);
+      await expect(
+        service.update(categoryId, updateCategoryDto),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 

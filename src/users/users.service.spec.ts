@@ -83,7 +83,9 @@ describe('UsersService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(existingUser);
 
-      await expect(service.create(createUserDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createUserDto)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockUserRepository.create).not.toHaveBeenCalled();
     });
 
@@ -197,7 +199,9 @@ describe('UsersService', () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findOne(userId)).rejects.toThrow(NotFoundException);
-      await expect(service.findOne(userId)).rejects.toThrow(`User with ID ${userId} not found`);
+      await expect(service.findOne(userId)).rejects.toThrow(
+        `User with ID ${userId} not found`,
+      );
     });
   });
 
@@ -280,8 +284,12 @@ describe('UsersService', () => {
         .mockResolvedValueOnce(existingUser)
         .mockResolvedValueOnce(anotherUser);
 
-      await expect(service.update(userId, updateUserDto)).rejects.toThrow(BadRequestException);
-      await expect(service.update(userId, updateUserDto)).rejects.toThrow('El email ya está en uso');
+      await expect(service.update(userId, updateUserDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(service.update(userId, updateUserDto)).rejects.toThrow(
+        'El email ya está en uso',
+      );
     });
 
     it('should throw NotFoundException when user to update does not exist', async () => {
@@ -292,7 +300,9 @@ describe('UsersService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.update(userId, updateUserDto)).rejects.toThrow(NotFoundException);
+      await expect(service.update(userId, updateUserDto)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

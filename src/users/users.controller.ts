@@ -1,9 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+} from '@nestjs/swagger';
 import { UserRole } from '../common/enums/user-role.enum';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -18,12 +33,12 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Create new user (ADMIN only)',
-    description: 'Allows admin to create a new user with any role'
+    description: 'Allows admin to create a new user with any role',
   })
-  @ApiResponse({ 
-    status: 201, 
+  @ApiResponse({
+    status: 201,
     description: 'User created successfully',
     schema: {
       example: {
@@ -33,11 +48,11 @@ export class UsersController {
           name: 'Maria Garcia',
           email: 'maria.garcia@example.com',
           role: 'TECHNICIAN',
-          isActive: true
+          isActive: true,
         },
-        message: 'Resource created successfully'
-      }
-    }
+        message: 'Resource created successfully',
+      },
+    },
   })
   @ApiResponse({ status: 400, description: 'Email already in use' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
@@ -49,12 +64,12 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'List all users (ADMIN only)',
-    description: 'Gets the complete list of registered users in the system'
+    description: 'Gets the complete list of registered users in the system',
   })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiResponse({
+    status: 200,
     description: 'List of users',
     schema: {
       example: {
@@ -65,19 +80,19 @@ export class UsersController {
             name: 'Admin User',
             email: 'admin@techhelpdesk.com',
             role: 'ADMIN',
-            isActive: true
+            isActive: true,
           },
           {
             id: '223e4567-e89b-12d3-a456-426614174001',
             name: 'Juan Perez',
             email: 'tecnico@techhelpdesk.com',
             role: 'TECHNICIAN',
-            isActive: true
-          }
+            isActive: true,
+          },
         ],
-        message: 'Request processed successfully'
-      }
-    }
+        message: 'Request processed successfully',
+      },
+    },
   })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
   @ApiResponse({ status: 403, description: 'Forbidden - ADMIN role required' })
@@ -88,13 +103,17 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Get user by ID (ADMIN only)',
-    description: 'Retrieves detailed information of a specific user'
+    description: 'Retrieves detailed information of a specific user',
   })
-  @ApiParam({ name: 'id', description: 'User UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiParam({
+    name: 'id',
+    description: 'User UUID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
     description: 'User found',
     schema: {
       example: {
@@ -105,11 +124,11 @@ export class UsersController {
           email: 'juan.perez@example.com',
           role: 'CLIENT',
           isActive: true,
-          createdAt: '2024-01-15T10:00:00Z'
+          createdAt: '2024-01-15T10:00:00Z',
         },
-        message: 'Request processed successfully'
-      }
-    }
+        message: 'Request processed successfully',
+      },
+    },
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
@@ -121,13 +140,17 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Update user (ADMIN only)',
-    description: 'Modifies data of an existing user'
+    description: 'Modifies data of an existing user',
   })
-  @ApiParam({ name: 'id', description: 'User UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiParam({
+    name: 'id',
+    description: 'User UUID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
     description: 'User updated successfully',
     schema: {
       example: {
@@ -137,11 +160,11 @@ export class UsersController {
           name: 'Juan Perez Updated',
           email: 'juan.perez@example.com',
           role: 'TECHNICIAN',
-          isActive: true
+          isActive: true,
         },
-        message: 'Request processed successfully'
-      }
-    }
+        message: 'Request processed successfully',
+      },
+    },
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })
@@ -153,23 +176,27 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
-  @ApiOperation({ 
+  @ApiOperation({
     summary: 'Delete user (ADMIN only)',
-    description: 'Deactivates or removes a user from the system'
+    description: 'Deactivates or removes a user from the system',
   })
-  @ApiParam({ name: 'id', description: 'User UUID', example: '123e4567-e89b-12d3-a456-426614174000' })
-  @ApiResponse({ 
-    status: 200, 
+  @ApiParam({
+    name: 'id',
+    description: 'User UUID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
     description: 'User deleted successfully',
     schema: {
       example: {
         success: true,
         data: {
-          message: 'User deleted successfully'
+          message: 'User deleted successfully',
         },
-        message: 'Request processed successfully'
-      }
-    }
+        message: 'Request processed successfully',
+      },
+    },
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 401, description: 'Not authenticated' })

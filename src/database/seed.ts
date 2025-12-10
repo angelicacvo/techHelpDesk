@@ -5,9 +5,9 @@ import { runSeeders } from 'typeorm-extension';
 AppDataSource.initialize()
   .then(async () => {
     console.log('Data Source has been initialized!');
-    
+
     await runSeeders(AppDataSource);
-    
+
     console.log('Seeding process finished!');
     process.exit(0);
   })

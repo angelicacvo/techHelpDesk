@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TechniciansService } from './technicians.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { Technician } from './entities/technician.entity';
 import { User } from '../users/entities/user.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
@@ -11,8 +10,6 @@ import { UpdateTechnicianDto } from './dto/update-technician.dto';
 
 describe('TechniciansService', () => {
   let service: TechniciansService;
-  let technicianRepository: Repository<Technician>;
-  let userRepository: Repository<User>;
 
   const mockTechnicianRepository = {
     findOne: jest.fn(),
@@ -42,8 +39,6 @@ describe('TechniciansService', () => {
     }).compile();
 
     service = module.get<TechniciansService>(TechniciansService);
-    technicianRepository = module.get<Repository<Technician>>(getRepositoryToken(Technician));
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
   });
 
   afterEach(() => {
@@ -90,7 +85,9 @@ describe('TechniciansService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.create(createTechnicianDto)).rejects.toThrow(NotFoundException);
+      await expect(service.create(createTechnicianDto)).rejects.toThrow(
+        NotFoundException,
+      );
     });
 
     it('should throw BadRequestException when user role is not TECHNICIAN', async () => {
@@ -106,7 +103,9 @@ describe('TechniciansService', () => {
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
 
-      await expect(service.create(createTechnicianDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createTechnicianDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw BadRequestException when technician profile already exists', async () => {
@@ -121,9 +120,13 @@ describe('TechniciansService', () => {
       };
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
-      mockTechnicianRepository.findOne.mockResolvedValue({ id: 'existing-tech' });
+      mockTechnicianRepository.findOne.mockResolvedValue({
+        id: 'existing-tech',
+      });
 
-      await expect(service.create(createTechnicianDto)).rejects.toThrow(BadRequestException);
+      await expect(service.create(createTechnicianDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -164,7 +167,9 @@ describe('TechniciansService', () => {
     it('should throw NotFoundException when technician not found', async () => {
       mockTechnicianRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.findOne('invalid-uuid')).rejects.toThrow(NotFoundException);
+      await expect(service.findOne('invalid-uuid')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 
@@ -206,7 +211,9 @@ describe('TechniciansService', () => {
 
       await service.remove(technicianId);
 
-      expect(mockTechnicianRepository.remove).toHaveBeenCalledWith(mockTechnician);
+      expect(mockTechnicianRepository.remove).toHaveBeenCalledWith(
+        mockTechnician,
+      );
     });
   });
 });

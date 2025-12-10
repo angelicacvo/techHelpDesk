@@ -35,11 +35,11 @@ export class TicketStatusValidationPipe implements PipeTransform {
     }
 
     const allowedTransitions = this.validTransitions[currentStatus];
-    
+
     if (!allowedTransitions.includes(newStatus)) {
       throw new BadRequestException(
         `Invalid status transition: ${currentStatus} → ${newStatus}. ` +
-        `Allowed transitions from ${currentStatus}: ${allowedTransitions.join(', ')}`
+          `Allowed transitions from ${currentStatus}: ${allowedTransitions.join(', ')}`,
       );
     }
 

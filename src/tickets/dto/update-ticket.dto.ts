@@ -1,4 +1,11 @@
-import { IsOptional, IsString, IsUUID, IsEnum, MaxLength, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsUUID,
+  IsEnum,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { TicketPriority } from '../../common/enums/ticket-priority.enum';
 
 export class UpdateTicketDto {

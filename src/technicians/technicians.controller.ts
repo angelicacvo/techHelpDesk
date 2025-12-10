@@ -1,8 +1,23 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { TechniciansService } from './technicians.service';
 import { CreateTechnicianDto } from './dto/create-technician.dto';
 import { UpdateTechnicianDto } from './dto/update-technician.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiParam,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -20,7 +35,10 @@ export class TechniciansController {
 
   @ApiOperation({ summary: 'Create a new technician (Admin only)' })
   @ApiResponse({ status: 201, description: 'Technician successfully created' })
-  @ApiResponse({ status: 400, description: 'User already has a technician profile or invalid role' })
+  @ApiResponse({
+    status: 400,
+    description: 'User already has a technician profile or invalid role',
+  })
   @ApiResponse({ status: 404, description: 'User not found' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden - Admin role required' })
@@ -62,7 +80,10 @@ export class TechniciansController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTechnicianDto: UpdateTechnicianDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTechnicianDto: UpdateTechnicianDto,
+  ) {
     return this.techniciansService.update(id, updateTechnicianDto);
   }
 

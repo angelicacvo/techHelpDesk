@@ -11,7 +11,13 @@ export default class MainSeeder implements Seeder {
     console.log('Starting database seeding...\n');
 
     await runSeeders(dataSource, {
-      seeds: [UserSeeder, CategorySeeder, ClientSeeder, TechnicianSeeder, TicketSeeder],
+      seeds: [
+        UserSeeder,
+        CategorySeeder,
+        ClientSeeder,
+        TechnicianSeeder,
+        TicketSeeder,
+      ],
     });
 
     console.log('\nDatabase seeding completed successfully!');
