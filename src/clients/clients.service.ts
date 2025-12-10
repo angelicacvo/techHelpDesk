@@ -94,22 +94,6 @@ export class ClientsService {
   async update(id: string, updateClientDto: UpdateClientDto): Promise<Client> {
     const client = await this.findOne(id);
 
-    if (updateClientDto.userEmail && updateClientDto.userEmail !== client.user.email) {
-      const user = await this.userRepository.findOne({
-        where: { email: updateClientDto.userEmail },
-      });
-
-      if (!user) {
-        throw new NotFoundException('User not found with that email');
-      }
-
-      if (user.role !== UserRole.CLIENT) {
-        throw new BadRequestException('User must have CLIENT role');
-      }
-
-      client.user = user;
-    }
-
     if (updateClientDto.name) client.name = updateClientDto.name;
     if (updateClientDto.contactEmail) client.contactEmail = updateClientDto.contactEmail;
     if (updateClientDto.company !== undefined) client.company = updateClientDto.company;

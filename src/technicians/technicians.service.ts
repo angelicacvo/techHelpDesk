@@ -97,25 +97,6 @@ export class TechniciansService {
   ): Promise<Technician> {
     const technician = await this.findOne(id);
 
-    if (
-      updateTechnicianDto.userEmail &&
-      updateTechnicianDto.userEmail !== technician.user.email
-    ) {
-      const user = await this.userRepository.findOne({
-        where: { email: updateTechnicianDto.userEmail },
-      });
-
-      if (!user) {
-        throw new NotFoundException('User not found with that email');
-      }
-
-      if (user.role !== UserRole.TECHNICIAN) {
-        throw new BadRequestException('User must have TECHNICIAN role');
-      }
-
-      technician.user = user;
-    }
-
     if (updateTechnicianDto.name) technician.name = updateTechnicianDto.name;
     if (updateTechnicianDto.specialty !== undefined) technician.specialty = updateTechnicianDto.specialty;
     if (updateTechnicianDto.availability !== undefined) technician.availability = updateTechnicianDto.availability;
