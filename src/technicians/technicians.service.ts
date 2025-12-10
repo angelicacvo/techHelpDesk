@@ -99,25 +99,28 @@ export class TechniciansService {
     const technician = await this.findOne(id);
 
     if (
-      updateTechnicianDto.userId &&
-      updateTechnicianDto.userId !== technician.user.id
+      updateTechnicianDto.userEmail &&
+      updateTechnicianDto.userEmail !== technician.user.email
     ) {
       const user = await this.userRepository.findOne({
-        where: { id: updateTechnicianDto.userId },
+        where: { email: updateTechnicianDto.userEmail },
       });
 
       if (!user) {
-        throw new NotFoundException('Usuario no encontrado');
+        throw new NotFoundException('User not found with that email');
       }
 
       if (user.role !== UserRole.TECHNICIAN) {
-        throw new BadRequestException('El usuario debe tener rol TECHNICIAN');
+        throw new BadRequestException('User must have TECHNICIAN role');
       }
 
       technician.user = user;
     }
 
-    Object.assign(technician, updateTechnicianDto);
+    if (updateTechnicianDto.name) technician.name = updateTechnicianDto.name;
+    if (updateTechnicianDto.specialty !== undefined) technician.specialty = updateTechnicianDto.specialty;
+    if (updateTechnicianDto.availability !== undefined) technician.availability = updateTechnicianDto.availability;
+
     return await this.technicianRepository.save(technician);
   }
 
