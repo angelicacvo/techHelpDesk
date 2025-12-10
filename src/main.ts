@@ -5,12 +5,16 @@ import { ConfigService } from '@nestjs/config';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn'], // Solo logs de errores y advertencias en producción
   });
   const config = app.get(ConfigService);
+
+  // Enable dependency injection for class-validator custom validators
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // Configurar validación automática con class-validator en todos los endpoints
   app.useGlobalPipes(
