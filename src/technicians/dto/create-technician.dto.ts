@@ -23,8 +23,16 @@ export class CreateTechnicianDto {
   name: string;
 
   @ApiProperty({
+    description: 'Email address (will also be used as login email)',
+    example: 'ana.martinez@company.com',
+  })
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
+
+  @ApiProperty({
     description: 'Technician specialty',
-    example: 'Hardware Support',
+    example: 'Network Infrastructure',
     minLength: 3,
     maxLength: 100,
   })
@@ -44,10 +52,12 @@ export class CreateTechnicianDto {
   availability?: boolean;
 
   @ApiProperty({
-    description: 'Email of the user to associate with this technician profile',
-    example: 'technician@example.com',
+    description: 'Password for the technician user account',
+    example: 'Tech123!',
+    minLength: 6,
   })
-  @IsEmail()
+  @IsString()
   @IsNotEmpty()
-  userEmail: string;
+  @MinLength(6)
+  password: string;
 }

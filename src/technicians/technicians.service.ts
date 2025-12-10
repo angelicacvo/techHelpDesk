@@ -24,36 +24,35 @@ export class TechniciansService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // Create a technician profile (validates user exists and has TECHNICIAN role)
+  // Create a technician profile and associated user account (Admin creates both at once)
   async create(createTechnicianDto: CreateTechnicianDto): Promise<Technician> {
-    const user = await this.userRepository.findOne({
-      where: { email: createTechnicianDto.userEmail },
+    // Check if email already exists
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createTechnicianDto.email },
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found with that email');
+    if (existingUser) {
+      throw new BadRequestException('Email already registered');
     }
 
-    if (user.role !== UserRole.TECHNICIAN) {
-      throw new BadRequestException('User must have TECHNICIAN role');
-    }
-
-    const existingTechnician = await this.technicianRepository.findOne({
-      where: { user: { id: user.id } },
+    // Create the user first
+    const user = this.userRepository.create({
+      name: createTechnicianDto.name,
+      email: createTechnicianDto.email,
+      password: createTechnicianDto.password,
+      role: UserRole.TECHNICIAN,
     });
 
-    if (existingTechnician) {
-      throw new BadRequestException(
-        'A technician profile already exists for this user',
-      );
-    }
+    await this.userRepository.save(user);
 
+    // Create the technician profile
     const technician = this.technicianRepository.create({
       name: createTechnicianDto.name,
       specialty: createTechnicianDto.specialty,
-      availability: createTechnicianDto.availability,
+      availability: createTechnicianDto.availability ?? true,
       user,
     });
+
     return await this.technicianRepository.save(technician);
   }
 

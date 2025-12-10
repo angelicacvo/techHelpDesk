@@ -22,7 +22,7 @@ export class CreateClientDto {
   name: string;
 
   @ApiProperty({
-    description: 'Client contact email address',
+    description: 'Client contact email address (will also be used as login email)',
     example: 'carlos.rodriguez@company.com',
   })
   @IsEmail()
@@ -40,10 +40,12 @@ export class CreateClientDto {
   company?: string;
 
   @ApiProperty({
-    description: 'Email of the user to associate with this client profile',
-    example: 'user@example.com',
+    description: 'Password for the client user account',
+    example: 'Client123!',
+    minLength: 6,
   })
-  @IsEmail()
+  @IsString()
   @IsNotEmpty()
-  userEmail: string;
+  @MinLength(6)
+  password: string;
 }

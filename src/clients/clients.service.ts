@@ -24,36 +24,35 @@ export class ClientsService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // Create a client profile (validates user exists and has CLIENT role)
+  // Create a client profile and associated user account (Admin creates both at once)
   async create(createClientDto: CreateClientDto): Promise<Client> {
-    const user = await this.userRepository.findOne({
-      where: { email: createClientDto.userEmail },
+    // Check if email already exists
+    const existingUser = await this.userRepository.findOne({
+      where: { email: createClientDto.contactEmail },
     });
 
-    if (!user) {
-      throw new NotFoundException('User not found with that email');
+    if (existingUser) {
+      throw new BadRequestException('Email already registered');
     }
 
-    if (user.role !== UserRole.CLIENT) {
-      throw new BadRequestException('User must have CLIENT role');
-    }
-
-    const existingClient = await this.clientRepository.findOne({
-      where: { user: { id: user.id } },
+    // Create the user first
+    const user = this.userRepository.create({
+      name: createClientDto.name,
+      email: createClientDto.contactEmail,
+      password: createClientDto.password,
+      role: UserRole.CLIENT,
     });
 
-    if (existingClient) {
-      throw new BadRequestException(
-        'A client profile already exists for this user',
-      );
-    }
+    await this.userRepository.save(user);
 
+    // Create the client profile
     const client = this.clientRepository.create({
       name: createClientDto.name,
       contactEmail: createClientDto.contactEmail,
       company: createClientDto.company,
       user,
     });
+
     return await this.clientRepository.save(client);
   }
 
